@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Psychic_Test.Data;
 using System;
@@ -28,6 +29,7 @@ namespace Psychic_Test
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.TryAddScoped<TestingGroup>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

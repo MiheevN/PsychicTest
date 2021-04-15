@@ -9,7 +9,7 @@ namespace Psychic_Test.Data
     {
         static int Number;
         public string Name { get; init; } = $"Экстрасенс {++Number}";
-        public float Credibility { get; protected set; }
+        public int Credibility { get; protected set; }
 
         private Random random;
         private List<sbyte> _Guesses { get; init; } = new List<sbyte>();
@@ -28,11 +28,11 @@ namespace Psychic_Test.Data
         }
         public void AddCreditibility()
         {
-            Credibility += 0.01f;
+            Credibility++;
         }
         public void ReduceCreditibility()
         {
-            Credibility -= 0.01f;
+            Credibility--;
         }
     }
 }

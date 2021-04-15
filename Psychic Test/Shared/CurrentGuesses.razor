@@ -1,0 +1,11 @@
+﻿@inject TestingGroup Group
+
+<div class="m-3">
+    <h3>Догадки:</h3>
+    @for (int i = 0; i < Group.CurrentGuesses.Count; i++)
+    {
+        <div>
+            Догадка @Group.Psyphics[i].Name - @Group.CurrentGuesses[i]
+        </div>
+    }
+</div>

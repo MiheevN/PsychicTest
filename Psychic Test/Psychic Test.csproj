@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Psychic_Test</RootNamespace>
+    <UserSecretsId>394e2399-5331-49db-a498-80960ca42667</UserSecretsId>
   </PropertyGroup>
 
 </Project>

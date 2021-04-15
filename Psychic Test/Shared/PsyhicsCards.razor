@@ -1,0 +1,14 @@
+﻿@inherits InfoPanel
+
+<div>
+    <h5>С вами работают экстрасенсы:</h5>
+    <div class="card-deck">
+        @foreach (var Psy in Group.Psyphics)
+        {
+            <div class="card">
+                <div class="card-header">@Psy.Name</div>
+                <div class="card-body">Достоверность = <b>@Psy.Credibility</b></div>
+            </div>
+        }
+    </div>
+</div>
