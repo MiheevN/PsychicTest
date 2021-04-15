@@ -1,0 +1,136 @@
+﻿@page "/"
+@using Psychic_Test.Data;
+
+<h1 class="text-center">Тестирование экстрасенсов</h1>
+
+<div class="row mb-5 mt-5 justify-content-around">
+    <div>
+        @if (SecretStage)
+        {
+            <h4>Загадайте 2 значное число</h4>
+
+            <button class="btn btn-block btn-primary" @onclick="ConfirmSecret">Загадал</button>
+        }
+        else
+        {
+            <div class="m-3">
+                <h3>Догадки:</h3>
+                @for (int i = 0; i < CurrentGuesses.Count; i++)
+                {
+                    <div>
+                        Догадка @Psyphics[i].Name - @CurrentGuesses[i]
+                    </div>
+                }
+            </div>
+            <h4>Напишите загаданное число</h4>
+
+            <input type="number" min="10" max="99" @bind="NewSecret" />
+            <button class="btn btn-block btn-success" @onclick="ConfirmEnter">Отправить</button>
+        }
+
+        <div class="m-2">
+            @if (SecretStage == true && CurrentGuesses.Count > 0)
+            {
+                <h4>Последние результаты эксперимента</h4>
+                for (int i = 0; i < CurrentGuesses.Count; i++)
+                {
+                    <div>
+                        @Psyphics[i].Name предоставил догадку <b>@CurrentGuesses[i]</b> и был <b>@string.Format(LastSecretNumber == CurrentGuesses[i] ? "прав. Достоверность повышена" : "НЕ прав. Достоверность понижена.")</b>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div>
+        <h5>С вами работают экстрасенсы:</h5>
+        <div class="card-deck">
+            @foreach (var Psy in Psyphics)
+            {
+                <div class="card">
+                    <div class="card-header">@Psy.Name</div>
+                    <div class="card-body">Достоверность = <b>@Psy.Credibility</b></div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<h3 class="text-center">История</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Номер эксперимента</th>
+            <th>Введённое число</th>
+            @foreach (var Psy in Psyphics)
+            {
+                <th>Догадки @Psy.Name</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < EnteredNumbers.Count; i++)
+        {
+            <tr>
+                <td>@(i+1)</td>
+                <td>@EnteredNumbers[i]</td>
+                @foreach (var Psy in Psyphics)
+                {
+                    <td>
+                        @Psy.Guesses[i]
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@code{
+    /// <summary>
+    /// 0 - Загадывание числа, 1 - демонстрация догадок, 2 - Результаты
+    /// </summary>
+    bool SecretStage { get; set; } = true;
+
+    List<Psyphic> Psyphics { get; set; } = new List<Psyphic>();
+    List<sbyte> CurrentGuesses { get; init; } = new List<sbyte>();
+
+    sbyte NewSecret { get; set; }
+
+    sbyte LastSecretNumber { get; set; }
+
+    List<sbyte> EnteredNumbers { get; init; } = new List<sbyte>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        byte Count = (byte)new Random().Next(2, 6);
+        for (int i = 0; i < Count; i++)
+        {
+            Psyphics.Add(new Psyphic());
+        }
+    }
+
+    void ConfirmSecret()
+    {
+        SecretStage = false;
+        CurrentGuesses.Clear();
+        foreach (var Psy in Psyphics)
+        {
+            CurrentGuesses.Add(Psy.GetNewGuess());
+        }
+    }
+
+    void ConfirmEnter()
+    {
+        LastSecretNumber = NewSecret;
+        EnteredNumbers.Add(NewSecret);
+        NewSecret = 10;
+        SecretStage = true;
+        for (int i = 0; i < CurrentGuesses.Count; i++)
+        {
+            if (LastSecretNumber == CurrentGuesses[i])
+                Psyphics[i].AddCreditibility();
+            else
+                Psyphics[i].ReduceCreditibility();
+        }
+    }
+}
