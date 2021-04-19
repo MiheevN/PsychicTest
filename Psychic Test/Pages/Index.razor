@@ -17,7 +17,8 @@
             <CurrentGuesses />
             <h4>Напишите загаданное число</h4>
 
-            <input class="input-group input-group-text" type="number" min="10" max="99" @bind="NewSecret" />
+            <input class="input-group input-group-text @string.Format(InvalidClass ?"alert-danger" : string.Empty)"
+                   type="number" min="10" max="99" @bind="NewSecret" placeholder="Введите 2 значное число" />
             <button class="btn btn-block btn-success" @onclick="ConfirmEnter">Отправить</button>
         }
     </div>
@@ -31,16 +32,26 @@
     /// </summary>
     bool SecretStage { get; set; } = true;
 
-    sbyte _secret = 10;
-    sbyte NewSecret
+    bool InvalidClass;
+    sbyte? _secret;
+    long? NewSecret
     {
         get => _secret;
         set
         {
-            _secret = Math.Clamp(value, (sbyte)10, (sbyte)99);
+            if (value.HasValue && value.Value >= 10 && value.Value <= 99)
+            {
+                _secret = (sbyte)value.Value;
+                InvalidClass = false;
+            }
+            else
+            {
+                _secret = null;
+                InvalidClass = true;
+            }
+
         }
     }
-
     void ConfirmSecret()
     {
         SecretStage = false;
@@ -49,8 +60,12 @@
 
     void ConfirmEnter()
     {
-        SecretStage = true;
-        Group.CheckGuess(NewSecret);
-        NewSecret = 10;
+        if (_secret.HasValue && !InvalidClass)
+        {
+            SecretStage = true;
+            Group.CheckGuess(_secret.Value);
+            _secret = null;
+            InvalidClass = false;
+        }
     }
 }
